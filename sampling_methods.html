@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction to Statistics</title>
+    <style>
+        :root {
+            --ttu-red: #CC0000;
+            --ttu-red-dark: #990000;
+            --ttu-black: #111111;
+            --ttu-charcoal: #252525;
+            --ttu-gray-900: #333333;
+            --ttu-gray-700: #5A5A5A;
+            --ttu-gray-300: #D7D7D7;
+            --ttu-gray-200: #E9E9E9;
+            --ttu-gray-100: #F5F5F5;
+            --white: #FFFFFF;
+            --green: #2F6B45;
+            --green-bg: #EEF7F1;
+            --gold: #8A641B;
+            --gold-bg: #FFF8E8;
+            --danger: #8D2E2E;
+            --danger-bg: #FBEFEF;
+            --shadow: 0 12px 30px rgba(0,0,0,.10);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: Inter, "Segoe UI", Arial, Helvetica, sans-serif;
+            background:
+                linear-gradient(rgba(255,255,255,.96), rgba(255,255,255,.96)),
+                repeating-linear-gradient(90deg, #000 0 1px, transparent 1px 84px);
+            color: var(--ttu-gray-900);
+            line-height: 1.72;
+        }
+
+        .header {
+            position: relative;
+            overflow: hidden;
+            background: var(--ttu-black);
+            color: var(--white);
+            padding: 72px 24px 66px;
+            text-align: left;
+            border-bottom: 8px solid var(--ttu-red);
+        }
+
+        .header::before {
+            content: "";
+            display: block;
+            max-width: 1120px;
+            margin: 0 auto 14px;
+            color: #F2B8B8;
+            font-size: .78rem;
+            letter-spacing: .20em;
+            font-weight: 800;
+        }
+
+        .header::after {
+            content: "";
+            position: absolute;
+            width: 360px;
+            height: 360px;
+            right: -95px;
+            top: -170px;
+            border: 52px solid rgba(204,0,0,.42);
+            transform: rotate(18deg);
+        }
+
+        .header h1,
+        .header p {
+            position: relative;
+            z-index: 1;
+            max-width: 1120px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .header h1 {
+            font-size: clamp(2.35rem, 5vw, 4.45rem);
+            line-height: 1.02;
+            letter-spacing: -.035em;
+            margin-bottom: 16px;
+            font-weight: 850;
+            text-shadow: none;
+        }
+
+        .header p {
+            max-width: 1120px;
+            font-size: 1.08rem;
+            color: #D9D9D9;
+            opacity: 1;
+        }
+
+        .container {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 42px 22px 68px;
+        }
+
+        .intro-section,
+        .section {
+            background: var(--white);
+            border: 1px solid var(--ttu-gray-200);
+            border-radius: 4px;
+            margin-bottom: 28px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .intro-section {
+            padding: 36px 40px;
+            border-top: 5px solid var(--ttu-red);
+        }
+
+        .intro-section h2 {
+            color: var(--ttu-black);
+            font-size: 1.85rem;
+            line-height: 1.2;
+            margin-bottom: 18px;
+            padding: 0 0 12px;
+            border-bottom: 2px solid var(--ttu-red);
+        }
+
+        .intro-section h3,
+        h3 {
+            color: var(--ttu-black);
+            font-size: 1.12rem;
+            margin-top: 24px;
+            margin-bottom: 10px;
+        }
+
+        .section-header {
+            position: relative;
+            background: var(--ttu-black);
+            color: var(--white);
+            padding: 30px 40px 28px;
+            border-left: 0;
+        }
+
+        .section-header::before {
+            content: "PROBABILITY";
+            display: inline-block;
+            margin-bottom: 8px;
+            color: #FFB3B3;
+            font-size: .72rem;
+            letter-spacing: .18em;
+            font-weight: 800;
+        }
+
+        .section-header.nonprob {
+            background: #3A3A3A;
+            border-left: 0;
+        }
+
+        .section-header.nonprob::before { content: "NON-PROBABILITY"; }
+
+        .section-header h2,
+        .section-header.nonprob h2 {
+            color: var(--white);
+            font-size: 1.72rem;
+            line-height: 1.2;
+            margin-bottom: 7px;
+        }
+
+        .type-description {
+            color: #D6D6D6;
+            font-size: .95rem;
+            font-style: normal;
+            max-width: 850px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            background: #F3F3F3;
+            border-bottom: 1px solid var(--ttu-gray-300);
+            overflow-x: auto;
+            padding: 14px 20px 0;
+            scrollbar-width: thin;
+        }
+
+        .tab-button {
+            appearance: none;
+            background: transparent;
+            color: var(--ttu-gray-700);
+            border: 0;
+            border-bottom: 4px solid transparent;
+            padding: 13px 16px 12px;
+            font-size: .92rem;
+            font-weight: 750;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background .2s ease, color .2s ease, border-color .2s ease;
+        }
+
+        .tab-button:hover {
+            color: var(--ttu-red-dark);
+            background: #FAFAFA;
+        }
+
+        .tab-button.active {
+            color: var(--ttu-black);
+            border-bottom-color: var(--ttu-red);
+            background: var(--white);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 38px 40px 42px;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: contentIn .28s ease;
+        }
+
+        @keyframes contentIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .method-title {
+            color: var(--ttu-black);
+            font-size: 1.75rem;
+            font-weight: 850;
+            letter-spacing: -.02em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .method-title::before {
+            content: "";
+            width: 8px;
+            height: 31px;
+            background: var(--ttu-red);
+            display: inline-block;
+            flex: 0 0 auto;
+        }
+
+        .definition-box,
+        .example-box,
+        .note {
+            border-radius: 3px;
+            padding: 17px 19px;
+            margin: 18px 0;
+        }
+
+        .definition-box {
+            background: #F4F4F4;
+            border-left: 5px solid var(--ttu-red);
+        }
+
+        .method-diagram {
+            background: #171717;
+            color: #F4F4F4;
+            padding: 25px;
+            border-radius: 3px;
+            margin: 24px 0;
+            border: 1px solid #2F2F2F;
+            border-left: 5px solid var(--ttu-red);
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+            font-size: .89rem;
+            line-height: 1.7;
+            text-align: center;
+            overflow-x: auto;
+        }
+
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin: 22px 0;
+        }
+
+        .pros, .cons {
+            padding: 18px 20px;
+            border-radius: 3px;
+            border: 1px solid transparent;
+        }
+
+        .pros {
+            background: var(--green-bg);
+            border-color: #CFE5D6;
+            border-top: 4px solid var(--green);
+        }
+
+        .cons {
+            background: var(--danger-bg);
+            border-color: #EECFCF;
+            border-top: 4px solid var(--danger);
+        }
+
+        .pros h4 { color: var(--green); margin-bottom: 8px; }
+        .cons h4 { color: var(--danger); margin-bottom: 8px; }
+        .pros ul, .cons ul { margin-left: 20px; }
+        .pros li, .cons li { margin-bottom: 6px; font-size: .95rem; }
+
+        .example-box {
+            background: var(--gold-bg);
+            border-left: 5px solid var(--gold);
+        }
+
+        .example-box strong { color: #6A4A12; }
+
+        p { margin-bottom: 14px; font-size: 1rem; }
+        ul, ol { margin: 14px 0 14px 28px; }
+        li { margin-bottom: 8px; }
+
+        .note {
+            background: #F3F3F3;
+            border-left: 5px solid var(--ttu-black);
+            color: #333;
+            font-size: .95rem;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 22px 0;
+            border: 1px solid var(--ttu-gray-300);
+            border-radius: 3px;
+            overflow: hidden;
+            box-shadow: none;
+        }
+
+        .comparison-table th {
+            background: var(--ttu-black);
+            color: var(--white);
+            padding: 13px 14px;
+            text-align: left;
+            font-weight: 750;
+            border-right: 1px solid #424242;
+        }
+
+        .comparison-table th:first-child { border-left: 5px solid var(--ttu-red); }
+        .comparison-table th:last-child { border-right: 0; }
+
+        .comparison-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--ttu-gray-200);
+            background: var(--white);
+        }
+
+        .comparison-table tr:nth-child(odd) td { background: #FAFAFA; }
+        .comparison-table tr:hover td { background: #F3F3F3; }
+        .comparison-table tr:last-child td { border-bottom: none; }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 22px;
+            right: 22px;
+            width: 48px;
+            height: 48px;
+            background: var(--ttu-red);
+            color: var(--white);
+            border: 2px solid var(--white);
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 1.25rem;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 6px 20px rgba(0,0,0,.24);
+        }
+
+        .back-to-top:hover { background: var(--ttu-red-dark); }
+        .back-to-top.show { display: block; }
+
+        @media (max-width: 768px) {
+            .header { padding: 58px 20px 50px; }
+            .header::after { opacity: .55; }
+            .container { padding: 28px 14px 52px; }
+            .intro-section { padding: 28px 24px; }
+            .section-header { padding: 26px 24px 24px; }
+            .tab-content { padding: 28px 24px 32px; }
+            .tabs { padding-left: 10px; }
+            .tab-button { padding: 12px 13px 11px; font-size: .86rem; }
+            .pros-cons { grid-template-columns: 1fr; }
+            .comparison-table { font-size: .86rem; display: block; overflow-x: auto; white-space: nowrap; }
+            .comparison-table th, .comparison-table td { padding: 10px; }
+        }
+
+        @media print {
+            body { background: white; }
+            .header { padding: 30px 20px; }
+            .tabs, .back-to-top { display: none !important; }
+            .tab-content { display: block !important; }
+            .section, .intro-section { box-shadow: none; break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Introduction to Statistics</h1>
+        <p>A practical guide to identifying, comparing, and choosing sampling strategies.</p>
+    </div>
+
+    <div class="container">
+        <!-- Introduction -->
+        <div class="intro-section">
+            <h2>What is Sampling?</h2>
+            <p>Sampling is the process of selecting a subset of individuals or items from a larger population to gather information about the population. Instead of studying an entire population (which is often impossible or impractical), we study a sample and use it to make inferences about the population.</p>
+
+            <h3>Why Sample?</h3>
+            <ul>
+                <li><strong>Cost:</strong> Studying a sample is much cheaper than studying the entire population</li>
+                <li><strong>Time:</strong> Sampling is faster than collecting data from everyone</li>
+                <li><strong>Feasibility:</strong> Some populations are impossible to completely enumerate</li>
+                <li><strong>Accuracy:</strong> Smaller samples often allow for more careful data collection</li>
+            </ul>
+
+            <h3>Two Main Categories of Sampling</h3>
+            <p><strong>Probability Sampling:</strong> Every member of the population has a known, non-zero chance of being selected. Results can be generalized to the population.</p>
+            <p><strong>Non-Probability Sampling:</strong> Selection is not random. Some members have no chance of being selected. Results cannot be reliably generalized to the population.</p>
+        </div>
+
+        <!-- Probability Sampling Methods -->
+        <div class="section">
+            <div class="section-header">
+                <h2>Probability Sampling Methods</h2>
+                <p class="type-description">Random selection ensures each person has a known chance of being chosen. Results can be generalized to the population.</p>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-button active" onclick="switchProbTab(0)">Simple Random</button>
+                <button class="tab-button" onclick="switchProbTab(1)">Systematic</button>
+                <button class="tab-button" onclick="switchProbTab(2)">Stratified</button>
+                <button class="tab-button" onclick="switchProbTab(3)">Cluster</button>
+            </div>
+
+            <!-- Tab 1: Simple Random Sampling -->
+            <div class="tab-content active">
+                <div class="method-title">Simple Random Sampling</div>
+                <div class="definition-box">
+                    <strong>Definition:</strong> Every member of the population has an equal chance of being selected. Like drawing names from a hat.
+                </div>
+
+                <div class="method-diagram">
+Population: [1] [2] [3] [4] [5] [6] [7] [8] [9] [10]<br>
+<br>
+Random Selection ✓<br>
+<br>
+Sample: [3], [7], [9]
+                </div>
+
+                <h3>How It Works</h3>
+                <ol>
+                    <li>Obtain a complete list of all population members</li>
+                    <li>Assign each person a number</li>
+                    <li>Use a random number generator or random method to select your sample</li>
+                </ol>
+
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>✓ Advantages</h4>
+                        <ul>
+                            <li>Unbiased</li>
+                            <li>Reduces selection bias</li>
+                            <li>Easy to understand</li>
+                            <li>Can generalize results</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>✗ Disadvantages</h4>
+                        <ul>
+                            <li>Requires complete population list</li>
+                            <li>Can be expensive</li>
+                            <li>Time-consuming for large populations</li>
+                            <li>May not represent minority groups</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <strong>Real-World Example:</strong> A sociologist randomly selects 500 households from the city's residential address database to study neighborhood social cohesion.
+                </div>
+
+                <h3>When to Use</h3>
+                <p>Use simple random sampling when you have a manageable population list and need an unbiased, representative sample.</p>
+            </div>
+
+            <!-- Tab 2: Systematic Sampling -->
+            <div class="tab-content">
+                <div class="method-title">Systematic Sampling</div>
+                <div class="definition-box">
+                    <strong>Definition:</strong> Select every kth item from a list after a random start. More convenient than simple random sampling.
+                </div>
+
+                <div class="method-diagram">
+Population size = 100, Sample size = 10, so k = 10<br>
+Random start = 3<br>
+<br>
+[1] [2] ✓ [4] [5] [6] [7] [8] [9] [10] [11] [12] [13] ✓<br>
+Continuing every 10th item...<br>
+<br>
+Sample: [3], [13], [23], [33], [43], [53], [63], [73], [83], [93]
+                </div>
+
+                <h3>How It Works</h3>
+                <ol>
+                    <li>Calculate k = Population size / Desired sample size</li>
+                    <li>Randomly select a starting point (between 1 and k)</li>
+                    <li>Select every kth item after that</li>
+                </ol>
+
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>✓ Advantages</h4>
+                        <ul>
+                            <li>Easy to implement</li>
+                            <li>No random number generator needed</li>
+                            <li>Works well for ordered lists</li>
+                            <li>Can generalize results</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>✗ Disadvantages</h4>
+                        <ul>
+                            <li>Can introduce bias if list has pattern</li>
+                            <li>Requires population list</li>
+                            <li>May miss important groups</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <strong>Real-World Example:</strong> A researcher surveys every 20th person entering a public transit station to examine commuting patterns.
+                </div>
+
+                <h3>When to Use</h3>
+                <p>Use systematic sampling when you have a list and want a simpler alternative to simple random sampling.</p>
+            </div>
+
+            <!-- Tab 3: Stratified Sampling -->
+            <div class="tab-content">
+                <div class="method-title">Stratified Sampling</div>
+                <div class="definition-box">
+                    <strong>Definition:</strong> Divide the population into groups (strata) and randomly sample from each group to ensure representation.
+                </div>
+
+                <div class="method-diagram">
+Population divided by age groups (strata):<br>
+<br>
+18-25: [O O ✓ O O]  |  26-40: [O ✓ O ✓ O O]<br>
+|<br>
+41-60: [O O ✓ O ✓ O O]  |  60+: [O ✓ O O]<br>
+<br>
+Random samples taken from within each stratum
+                </div>
+
+                <h3>How It Works</h3>
+                <ol>
+                    <li>Identify important characteristics that vary (age, gender, income, etc.)</li>
+                    <li>Divide population into non-overlapping groups (strata)</li>
+                    <li>Randomly sample from within each stratum</li>
+                    <li>Combine samples from all strata</li>
+                </ol>
+
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>✓ Advantages</h4>
+                        <ul>
+                            <li>Ensures representation of all groups</li>
+                            <li>More precise estimates</li>
+                            <li>Can generalize to population</li>
+                            <li>Better for diverse populations</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>✗ Disadvantages</h4>
+                        <ul>
+                            <li>Requires knowing population characteristics</li>
+                            <li>More complex to implement</li>
+                            <li>Deciding strata can be subjective</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <strong>Real-World Example:</strong> A sociologist divides residents into age groups and randomly samples from each group to examine attitudes toward policing.
+                </div>
+
+                <h3>When to Use</h3>
+                <p>Use stratified sampling when the population has distinct subgroups and you want to ensure all are represented.</p>
+            </div>
+
+            <!-- Tab 4: Cluster Sampling -->
+            <div class="tab-content">
+                <div class="method-title">Cluster Sampling</div>
+                <div class="definition-box">
+                    <strong>Definition:</strong> Divide the population into clusters (groups), randomly select some clusters, then study all members in selected clusters.
+                </div>
+
+                <div class="method-diagram">
+Schools (clusters):<br>
+<br>
+[School A ✓]  [School B]  [School C ✓]  [School D]<br>
+    |                            |<br>
+  Survey ALL            Survey ALL<br>
+  students             students<br>
+<br>
+Sample: All students from Schools A and C
+                </div>
+
+                <h3>How It Works</h3>
+                <ol>
+                    <li>Divide population into naturally occurring clusters</li>
+                    <li>Randomly select some clusters</li>
+                    <li>Include ALL members from selected clusters in your sample</li>
+                </ol>
+
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>✓ Advantages</h4>
+                        <ul>
+                            <li>Very cost-effective</li>
+                            <li>Easy to implement</li>
+                            <li>Good for geographically scattered populations</li>
+                            <li>Don't need complete population list</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>✗ Disadvantages</h4>
+                        <ul>
+                            <li>Less precise than stratified sampling</li>
+                            <li>Clusters may not be representative</li>
+                            <li>Cluster bias possible</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <strong>Real-World Example:</strong> A researcher randomly selects 15 neighborhoods in a metropolitan area and interviews every household within those neighborhoods about community engagement.
+                </div>
+
+                <h3>When to Use</h3>
+                <p>Use cluster sampling when the population is naturally grouped and data collection is logistically challenging.</p>
+            </div>
+        </div>
+
+        <!-- Non-Probability Sampling Methods -->
+        <div class="section">
+            <div class="section-header nonprob">
+                <h2>Non-Probability Sampling Methods</h2>
+                <p class="type-description">Selection is not random. Cannot generalize results to the population with confidence.</p>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-button active" onclick="switchNonProbTab(0)">Convenience</button>
+                <button class="tab-button" onclick="switchNonProbTab(1)">Snowball</button>
+                <button class="tab-button" onclick="switchNonProbTab(2)">Quota</button>
+                <button class="tab-button" onclick="switchNonProbTab(3)">Purposive</button>
+                <button class="tab-button" onclick="switchNonProbTab(4)">Volunteer</button>
+            </div>
+
+            <!-- Tab 1: Convenience Sampling -->
+            <div class="tab-content active">
+                <div class="method-title">Convenience Sampling</div>
+                <div class="definition-box">
+                    <strong>Definition:</strong> Select participants who are easiest to reach or most available. Also called "accidental sampling."
+                </div>
+
+                <div class="method-diagram">
+Surveyor at coffee shop:<br>
+<br>
+[O O ✓ ✓ O O ✓ O]<br>
+    |   |       |<br>
+ Available  Available Available<br>
+ at the time at the time at the time<br>
+<br>
+Sample only includes people at coffee shop today
+                </div>
+
+                <h3>How It Works</h3>
+                <p>Simply select people who are readily available or easy to access. No randomization involved.</p>
+
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>✓ Advantages</h4>
+                        <ul>
+                            <li>Very quick and easy</li>
+                            <li>Inexpensive</li>
+                            <li>Good for preliminary research</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>✗ Disadvantages</h4>
+                        <ul>
+                            <li>Highly biased</li>
+                            <li>Cannot generalize</li>
+                            <li>Not representative</li>
+                            <li>Often samples only "willing" participants</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <strong>Real-World Example:</strong> A researcher surveys students sitting in the campus student union about social media use because they are easy to reach.
+                </div>
+
+                <h3>When to Use</h3>
+                <p>Use convenience sampling only for exploratory research or when probability sampling is impossible.</p>
+            </div>
+
+            <!-- Tab 2: Snowball Sampling -->
+            <div class="tab-content">
+                <div class="method-title">Snowball Sampling</div>
+                <div class="definition-box">
+                    <strong>Definition:</strong> Existing participants recruit future participants. Like a snowball rolling downhill, growing as it goes.
+                </div>
+
+                <div class="method-diagram">
+                       [Start] Person 1<br>
+                           |<br>
+                      refers to<br>
+                           |<br>
+            [Person 2]---[Person 3]---[Person 4]<br>
+                |            |            |<br>
+            refers to   refers to   refers to<br>
+                |            |            |<br>
+         [Person 5]   [Person 6]   [Person 7]<br>
+<br>
+Sample grows like a rolling snowball
+                </div>
+
+                <h3>How It Works</h3>
+                <ol>
+                    <li>Start with an initial participant</li>
+                    <li>Ask them to refer others who meet your criteria</li>
+                    <li>Interview those referrals</li>
+                    <li>Ask them to refer others, continuing the chain</li>
+                </ol>
+
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>✓ Advantages</h4>
+                        <ul>
+                            <li>Great for hard-to-reach populations</li>
+                            <li>Builds trust and rapport</li>
+                            <li>Efficient for sensitive topics</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>✗ Disadvantages</h4>
+                        <ul>
+                            <li>Highly biased</li>
+                            <li>Cannot generalize</li>
+                            <li>Similar people refer similar people</li>
+                            <li>Takes time</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <strong>Real-World Example:</strong> A researcher studying people experiencing homelessness begins with one participant, who refers others in their social network.
+                </div>
+
+                <h3>When to Use</h3>
+                <p>Use snowball sampling for hard-to-reach or hidden populations where building trust is important.</p>
+            </div>
+
+            <!-- Tab 3: Quota Sampling -->
+            <div class="tab-content">
+                <div class="method-title">Quota Sampling</div>
+                <div class="definition-box">
+                    <strong>Definition:</strong> Set quotas for different groups, then select participants non-randomly until quotas are filled.
+                </div>
+
+                <div class="method-diagram">
+Target: 50% Men, 50% Women<br>
+<br>
+Men: [O O O O O ✓ ✓ ✓ ✓ ✓] (quota = 50)<br>
+                |<br>
+         Non-random selection<br>
+                |<br>
+Women: [O O O O O ✓ ✓ ✓ ✓ ✓] (quota = 50)<br>
+<br>
+Fill quotas by convenient selection within each group
+                </div>
+
+                <h3>How It Works</h3>
+                <ol>
+                    <li>Identify important characteristics (age, gender, income, etc.)</li>
+                    <li>Set quotas for each group (e.g., 40% men, 60% women)</li>
+                    <li>Recruit participants until quotas are met</li>
+                    <li>Within each group, selection is non-random (convenient)</li>
+                </ol>
+
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>✓ Advantages</h4>
+                        <ul>
+                            <li>Ensures representation of groups</li>
+                            <li>Faster than stratified sampling</li>
+                            <li>Cheaper than probability methods</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>✗ Disadvantages</h4>
+                        <ul>
+                            <li>Non-random within quotas introduces bias</li>
+                            <li>Cannot generalize</li>
+                            <li>Quotas may not reflect population accurately</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <strong>Real-World Example:</strong> A researcher recruits participants until the sample includes equal numbers of men and women, selecting whoever is available within each group.
+                </div>
+
+                <h3>When to Use</h3>
+                <p>Use quota sampling when you need group representation but can't use random selection.</p>
+            </div>
+
+            <!-- Tab 4: Purposive Sampling -->
+            <div class="tab-content">
+                <div class="method-title">Purposive (Judgment) Sampling</div>
+                <div class="definition-box">
+                    <strong>Definition:</strong> Researcher deliberately selects participants they judge will be most useful or representative based on specific criteria.
+                </div>
+
+                <div class="method-diagram">
+Population:<br>
+[O O ✓ O O O ✓ O O ✓ O O]<br>
+    |        |        |<br>
+ Researcher judges these are<br>
+ most information-rich or useful
+                </div>
+
+                <h3>How It Works</h3>
+                <p>Based on your knowledge and judgment, you select people who you believe have the characteristics you're looking for.</p>
+
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>✓ Advantages</h4>
+                        <ul>
+                            <li>Good for specific populations</li>
+                            <li>Efficient use of resources</li>
+                            <li>Finds "information-rich" cases</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>✗ Disadvantages</h4>
+                        <ul>
+                            <li>Heavily biased toward researcher's judgment</li>
+                            <li>Cannot generalize</li>
+                            <li>Subjective and prone to error</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <strong>Real-World Example:</strong> A sociologist studying formerly incarcerated individuals intentionally recruits participants who have been released within the past two years.
+                </div>
+
+                <h3>When to Use</h3>
+                <p>Use purposive sampling for qualitative research where you need specific types of participants.</p>
+            </div>
+
+            <!-- Tab 5: Volunteer Sampling -->
+            <div class="tab-content">
+                <div class="method-title">Volunteer (Self-Selection) Sampling</div>
+                <div class="definition-box">
+                    <strong>Definition:</strong> People voluntarily participate, usually in response to an advertisement or open invitation.
+                </div>
+
+                <div class="method-diagram">
+Advertisement: "We need volunteers for a study!"<br>
+<br>
+Population: [O O O O O O O O O O O O]<br>
+                |<br>
+          Interested?<br>
+                |<br>
+Volunteers: [✓ ✓ ✓ ✓ ✓]<br>
+<br>
+Only willing people participate
+                </div>
+
+                <h3>How It Works</h3>
+                <p>You advertise a study and accept anyone who volunteers to participate.</p>
+
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>✓ Advantages</h4>
+                        <ul>
+                            <li>Easy to recruit</li>
+                            <li>Inexpensive</li>
+                            <li>Motivated participants</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>✗ Disadvantages</h4>
+                        <ul>
+                            <li>Volunteers are different from population</li>
+                            <li>Selection bias is extreme</li>
+                            <li>Cannot generalize</li>
+                            <li>Biased toward interested/opinionated people</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <strong>Real-World Example:</strong> An online advertisement invites people to participate in a study about attitudes toward immigration. Only those who volunteer are included.
+                </div>
+
+                <h3>When to Use</h3>
+                <p>Avoid this method for generalizable research. Use only when necessary and acknowledge the limitation.</p>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="intro-section">
+            <h2>Quick Comparison</h2>
+            <table class="comparison-table">
+                <tr>
+                    <th>Method</th>
+                    <th>Type</th>
+                    <th>Random?</th>
+                    <th>Can Generalize?</th>
+                    <th>Cost</th>
+                </tr>
+                <tr>
+                    <td><strong>Simple Random</strong></td>
+                    <td>Probability</td>
+                    <td>✓ Yes</td>
+                    <td>✓ Yes</td>
+                    <td>Medium</td>
+                </tr>
+                <tr>
+                    <td><strong>Systematic</strong></td>
+                    <td>Probability</td>
+                    <td>✓ Mostly</td>
+                    <td>✓ Yes</td>
+                    <td>Low</td>
+                </tr>
+                <tr>
+                    <td><strong>Stratified</strong></td>
+                    <td>Probability</td>
+                    <td>✓ Yes</td>
+                    <td>✓ Yes</td>
+                    <td>High</td>
+                </tr>
+                <tr>
+                    <td><strong>Cluster</strong></td>
+                    <td>Probability</td>
+                    <td>✓ Yes</td>
+                    <td>✓ Yes</td>
+                    <td>Low</td>
+                </tr>
+                <tr>
+                    <td><strong>Convenience</strong></td>
+                    <td>Non-Probability</td>
+                    <td>✗ No</td>
+                    <td>✗ No</td>
+                    <td>Very Low</td>
+                </tr>
+                <tr>
+                    <td><strong>Snowball</strong></td>
+                    <td>Non-Probability</td>
+                    <td>✗ No</td>
+                    <td>✗ No</td>
+                    <td>Low</td>
+                </tr>
+                <tr>
+                    <td><strong>Quota</strong></td>
+                    <td>Non-Probability</td>
+                    <td>✗ No</td>
+                    <td>✗ No</td>
+                    <td>Medium</td>
+                </tr>
+                <tr>
+                    <td><strong>Purposive</strong></td>
+                    <td>Non-Probability</td>
+                    <td>✗ No</td>
+                    <td>✗ No</td>
+                    <td>Medium</td>
+                </tr>
+                <tr>
+                    <td><strong>Volunteer</strong></td>
+                    <td>Non-Probability</td>
+                    <td>✗ No</td>
+                    <td>✗ No</td>
+                    <td>Low</td>
+                </tr>
+            </table>
+
+            <h2 style="margin-top: 30px;">Key Takeaways</h2>
+            <ul>
+                <li><strong>Probability sampling</strong> uses randomization and can generalize to the population</li>
+                <li><strong>Non-probability sampling</strong> is convenient but cannot reliably generalize</li>
+                <li><strong>Choice of method</strong> depends on your research question, budget, population, and access</li>
+                <li><strong>Better sampling</strong> methods (probability) give more trustworthy results, but are more expensive</li>
+                <li><strong>Always disclose</strong> your sampling method so readers know the limitations</li>
+            </ul>
+
+            <div class="note">
+                <strong>Remember:</strong> The best sampling method is the one that minimizes bias and best answers your research question, within your constraints.
+            </div>
+        </div>
+    </div>
+
+    <button class="back-to-top" onclick="scrollToTop()">↑</button>
+
+    <script>
+        function switchProbTab(index) {
+            let sections = document.querySelectorAll('.section');
+            let probSection = sections[0]; // First .section is probability
+
+            let contents = probSection.querySelectorAll('.tab-content');
+            let buttons = probSection.querySelectorAll('.tab-button');
+
+            contents.forEach(content => content.classList.remove('active'));
+            buttons.forEach(button => button.classList.remove('active'));
+
+            if (contents[index]) {
+                contents[index].classList.add('active');
+            }
+            if (buttons[index]) {
+                buttons[index].classList.add('active');
+            }
+        }
+
+        function switchNonProbTab(index) {
+            let sections = document.querySelectorAll('.section');
+            let nonProbSection = sections[1]; // Second .section is non-probability
+
+            let contents = nonProbSection.querySelectorAll('.tab-content');
+            let buttons = nonProbSection.querySelectorAll('.tab-button');
+
+            contents.forEach(content => content.classList.remove('active'));
+            buttons.forEach(button => button.classList.remove('active'));
+
+            if (contents[index]) {
+                contents[index].classList.add('active');
+            }
+            if (buttons[index]) {
+                buttons[index].classList.add('active');
+            }
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.addEventListener('scroll', () => {
+            let btn = document.querySelector('.back-to-top');
+            if (window.scrollY > 300) {
+                btn.classList.add('show');
+            } else {
+                btn.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>
