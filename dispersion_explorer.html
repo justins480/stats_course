@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction to Statistics | Dispersion Explorer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --ttu-red: #cc0000;
+            --ttu-red-dark: #a80000;
+            --ttu-black: #111111;
+            --ttu-charcoal: #2b2b2b;
+            --ttu-gray-100: #f5f5f5;
+            --ttu-gray-200: #e7e7e7;
+            --ttu-gray-300: #d3d3d3;
+            --ttu-gray-600: #666666;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+            background: #f2f2f2;
+            color: var(--ttu-charcoal);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .course-header {
+            background: linear-gradient(135deg, #0f0f0f 0%, #242424 100%);
+            color: white;
+            border-bottom: 6px solid var(--ttu-red);
+            padding: 42px 24px 36px;
+        }
+
+        .course-header-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .course-name {
+            color: #f0f0f0;
+            font-size: 0.88rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .course-header h1 {
+            color: white;
+            font-size: clamp(2rem, 4vw, 3.25rem);
+            line-height: 1.08;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        .course-header .subtitle {
+            color: #d9d9d9;
+            font-size: 1.08rem;
+            margin: 0;
+            text-align: left;
+            max-width: 780px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 34px 20px 54px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-start;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: var(--ttu-black);
+            color: white;
+            border: 1px solid var(--ttu-black);
+            padding: 11px 22px;
+            border-radius: 6px;
+            font-size: 0.96rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            background: var(--ttu-red);
+            border-color: var(--ttu-red);
+            transform: translateY(-1px);
+            box-shadow: 0 5px 14px rgba(0,0,0,0.16);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .clear-btn {
+            background: white;
+            color: var(--ttu-red-dark);
+            border: 2px solid var(--ttu-red);
+        }
+
+        .clear-btn:hover {
+            background: var(--ttu-red);
+            color: white;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+            margin-bottom: 24px;
+        }
+
+        .chart-card,
+        .tab-container {
+            background: white;
+            border: 1px solid var(--ttu-gray-300);
+            border-radius: 10px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+            overflow: hidden;
+        }
+
+        .chart-card {
+            padding: 0 24px 22px;
+        }
+
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--ttu-black);
+            margin: 0 -24px 18px;
+            padding: 17px 24px 14px;
+            border-top: 5px solid var(--ttu-red);
+            border-bottom: 1px solid var(--ttu-gray-200);
+            background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+        }
+
+        .stats-panel {
+            background: var(--ttu-gray-100);
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            border: 1px solid var(--ttu-gray-200);
+        }
+
+        .full-width .stats-panel {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .stat-box {
+            background: white;
+            padding: 11px 13px;
+            border-radius: 6px;
+            border-left: 4px solid var(--ttu-red);
+            box-shadow: inset 0 0 0 1px #ededed;
+        }
+
+        .stat-label {
+            font-size: 0.82rem;
+            color: var(--ttu-gray-600);
+            margin-bottom: 3px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--ttu-black);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 350px;
+            margin-bottom: 14px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin: 7px 0;
+            font-size: 0.92rem;
+            color: #555;
+        }
+
+        .legend-color {
+            width: 18px;
+            height: 18px;
+            border-radius: 3px;
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+
+        .mean-line {
+            background: var(--ttu-black);
+        }
+
+        .sd-line {
+            background: #c9c9c9;
+        }
+
+        .data-points {
+            background: var(--ttu-red);
+        }
+
+        .tab-container {
+            margin-top: 24px;
+            padding: 0;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid var(--ttu-gray-200);
+            background: #fafafa;
+            overflow-x: auto;
+        }
+
+        .tab-button {
+            background: transparent;
+            color: #555;
+            border: none;
+            border-radius: 0;
+            padding: 14px 20px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            cursor: pointer;
+            border-bottom: 4px solid transparent;
+            transition: all 0.2s ease;
+            box-shadow: none;
+        }
+
+        .tab-button.active {
+            color: var(--ttu-red-dark);
+            border-bottom-color: var(--ttu-red);
+            background: white;
+        }
+
+        .tab-button:hover {
+            color: var(--ttu-red-dark);
+            background: #f4f4f4;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .tab-content {
+            display: none;
+            color: #333;
+            line-height: 1.65;
+            padding: 24px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tab-content h3 {
+            color: var(--ttu-black);
+            font-size: 1.25rem;
+            margin-bottom: 12px;
+        }
+
+        .info-box {
+            background: #f8f8f8;
+            border-left: 4px solid var(--ttu-red);
+            padding: 14px 16px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border-top: 1px solid #ededed;
+            border-right: 1px solid #ededed;
+            border-bottom: 1px solid #ededed;
+        }
+
+        .info-box strong {
+            color: var(--ttu-black);
+        }
+
+        .section-label {
+            display: inline-block;
+            color: var(--ttu-red-dark);
+            font-size: 0.82rem;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+
+        .tool-description {
+            background: white;
+            border: 1px solid var(--ttu-gray-300);
+            border-left: 5px solid var(--ttu-red);
+            border-radius: 10px;
+            padding: 20px 22px;
+            margin: 0 0 22px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+        }
+
+        .tool-description h2 {
+            margin: 0 0 8px;
+            font-size: 1.15rem;
+            color: var(--ttu-black);
+        }
+
+        .tool-description p {
+            margin: 0;
+            color: #4f4f4f;
+        }
+
+        @media (max-width: 1024px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: auto;
+            }
+
+            .course-header h1 {
+                font-size: 2.2rem;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .course-header {
+                padding: 32px 18px 28px;
+            }
+
+            .container {
+                padding: 24px 14px 40px;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .controls button {
+                width: 100%;
+            }
+
+            .stats-panel,
+            .full-width .stats-panel {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-card {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+
+            .chart-title {
+                margin-left: -16px;
+                margin-right: -16px;
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        .explorer-section {
+            margin: 0 0 34px;
+        }
+
+        .explorer-heading {
+            background: #111;
+            color: white;
+            border-left: 6px solid var(--ttu-red);
+            border-radius: 9px 9px 0 0;
+            padding: 20px 24px;
+            margin-top: 22px;
+        }
+
+        .explorer-heading h2 {
+            margin: 0 0 6px;
+            font-size: 1.45rem;
+            color: white;
+        }
+
+        .explorer-heading p {
+            margin: 0;
+            color: #dedede;
+            max-width: 950px;
+        }
+
+        .section-kicker {
+            color: #ff6666;
+            font-size: .78rem;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            font-weight: 900;
+            margin-bottom: 4px;
+        }
+
+        .top-learning-tabs {
+            margin: 18px 0 24px;
+        }
+
+        .dispersion-note {
+            background: #f7f7f7;
+            border-left: 5px solid var(--ttu-red);
+            border-radius: 6px;
+            padding: 15px 17px;
+            margin: 8px 0 16px;
+        }
+
+        .dispersion-note h3 {
+            margin: 0 0 6px;
+            color: #111;
+            font-size: 1.05rem;
+        }
+
+        .dispersion-note p {
+            margin: 5px 0;
+            color: #4e4e4e;
+            font-size: .94rem;
+        }
+
+        @media (max-width: 900px) {
+        }
+
+
+        .dispersion-mini-note {
+            background: #f7f7f7;
+            border-left: 4px solid var(--ttu-red);
+            border-radius: 6px;
+            padding: 12px 14px;
+            margin: 2px 0 14px;
+            color: #4d4d4d;
+            font-size: 0.92rem;
+        }
+
+        .dispersion-mini-note strong {
+            color: var(--ttu-black);
+        }
+
+    </style>
+
+</head>
+<body>
+    <header class="course-header">
+        <div class="course-header-inner">
+            <div class="course-name">Introduction to Statistics</div>
+            <h1>Bivariate Distribution Explorer</h1>
+            <p class="subtitle">Generate random data and observe how means and standard deviations change across samples.</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="section-label">Interactive Supplemental Tool</div>
+<section class="explorer-section bivariate-section">
+  <div class="explorer-heading">
+    <div>
+      <div class="section-kicker">Part 1</div>
+      <h2>Bivariate Distribution Explorer</h2>
+      <p>Now examine two variables together. Compare each variable's distribution with the combined scatterplot and focus on how observations spread around the center.</p>
+    </div>
+  </div>
+
+        <div class="tool-description">
+            <h2>About this Tool</h2>
+            <p>This interactive explorer is designed to visually demonstrate dispersion. Each generated sample contains values constrained between -10 and +10 so the scale remains easy to interpret, but the mean is allowed to vary naturally from sample to sample. Use the individual X and Y displays to see how far each observation falls from its sample mean, then compare those distances with the reported standard deviations. The scatterplot shows how the same observations appear when the two variables are viewed together.</p>
+        </div>
+
+
+        
+
+
+        
+<div class="tab-container top-learning-tabs">
+  <div class="tabs">
+    <button class="tab-button active" onclick="switchTab(0)">Exploration Tips</button>
+    <button class="tab-button" onclick="switchTab(1)">Understanding Mean &amp; SD</button>
+  </div>
+
+  <div class="tab-content active">
+    <h3>Exploration Tips</h3>
+    <div class="info-box"><strong>Generate New Sample:</strong> Creates a completely new random sample with values constrained between -10 and +10. Compare how the mean and standard deviation change from one sample to the next.</div>
+    <div class="info-box"><strong>Add More Points:</strong> Adds observations to the current sample while keeping all values between -10 and +10. Watch how the sample mean and standard deviation respond as the sample grows.</div>
+    <div class="info-box"><strong>Clear All Data:</strong> Removes all observations so you can begin a new exploration.</div>
+  </div>
+
+  <div class="tab-content">
+    <h3>Understanding Mean &amp; Standard Deviation</h3>
+    <div class="info-box"><strong>Mean:</strong> The arithmetic average of the observations. It identifies the center of the current sample and is allowed to vary naturally as the data change.</div>
+    <div class="info-box"><strong>Standard Deviation:</strong> Describes how far observations tend to fall from the mean. A larger standard deviation indicates greater dispersion.</div>
+    <div class="info-box"><strong>Connect the Number to the Picture:</strong> Compare the reported standard deviation with how far the individual observations fall from the sample mean in the X and Y displays. The mean may change when you generate a new sample or add observations. Each line shows an observation's deviation from that sample mean. Longer lines indicate greater dispersion; shorter lines indicate less dispersion. All generated values are constrained between -10 and +10 to keep the scale easy to interpret.</div>
+  </div>
+</div>
+
+        <div class="controls">
+            <button onclick="generateNewSample()">Generate New Sample</button>
+            <button onclick="addPoints()">Add More Points</button>
+            <button class="clear-btn" onclick="clearAll()">Clear All Data</button>
+        </div>
+
+        <div class="grid-container">
+            <!-- X Distribution -->
+            <div class="chart-card">
+                <div class="chart-title">X Variable: Distance from the Sample Mean</div>
+                <div class="stats-panel">
+                    <div class="stat-box">
+                        <div class="stat-label">Mean (X)</div>
+                        <div class="stat-value" id="xMean">—</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">SD (X)</div>
+                        <div class="stat-value" id="xSD">—</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">N (Sample Size)</div>
+                        <div class="stat-value" id="xN">—</div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="xChart"></canvas>
+                </div>
+                <div class="dispersion-mini-note">
+                    <strong>How to read this display:</strong> The black vertical line marks the current sample mean. Each dot is one X observation, and the horizontal line from the mean to the dot shows that observation's deviation. Longer lines mean the observation is farther from the center and contributes more to dispersion. Values are always kept between -10 and +10.
+                </div>
+                <div style="font-size: 0.9em; color: #666;">
+                    <div class="legend-item">
+                        <div class="legend-color mean-line"></div>
+                        <span>Sample Mean</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color sd-line"></div>
+                        <span>Line = Deviation from Sample Mean</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color data-points"></div>
+                        <span>Data Points</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Y Distribution -->
+            <div class="chart-card">
+                <div class="chart-title">Y Variable: Distance from the Sample Mean</div>
+                <div class="stats-panel">
+                    <div class="stat-box">
+                        <div class="stat-label">Mean (Y)</div>
+                        <div class="stat-value" id="yMean">—</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">SD (Y)</div>
+                        <div class="stat-value" id="ySD">—</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">N (Sample Size)</div>
+                        <div class="stat-value" id="yN">—</div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="yChart"></canvas>
+                </div>
+                <div class="dispersion-mini-note">
+                    <strong>How to read this display:</strong> The black vertical line marks the current sample mean. Each dot is one Y observation, and the horizontal line from the mean to the dot shows that observation's deviation. Longer lines mean the observation is farther from the center and contributes more to dispersion. Values are always kept between -10 and +10.
+                </div>
+                <div style="font-size: 0.9em; color: #666;">
+                    <div class="legend-item">
+                        <div class="legend-color mean-line"></div>
+                        <span>Sample Mean</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color sd-line"></div>
+                        <span>Line = Deviation from Sample Mean</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color data-points"></div>
+                        <span>Data Points</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Combined XY Scatterplot -->
+            <div class="chart-card full-width">
+                <div class="chart-title">Combined X and Y (Scatterplot)</div>
+                <div class="stats-panel">
+                    <div class="stat-box">
+                        <div class="stat-label">Mean (X, Y)</div>
+                        <div class="stat-value" id="combinedMean">—</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Combined SD</div>
+                        <div class="stat-value" id="combinedSD">—</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">N (Sample Size)</div>
+                        <div class="stat-value" id="sampleSize">—</div>
+                    </div>
+                </div>
+                <div class="chart-container" style="height: 400px;">
+                    <canvas id="xyChart"></canvas>
+                </div>
+                <div class="dispersion-note">
+                    <h3>Reading Dispersion in the Scatterplot</h3>
+                    <p>Each point represents one observation measured on both variables. The <strong>red dot</strong> marks the current pair of sample means (mean X, mean Y). Because the means are allowed to vary naturally, this point may move from sample to sample. The faint lines connect each observation back to that center so you can visualize its distance from the mean.</p>
+                    <p>When points stay close to the center, the data show <strong>less dispersion</strong>. When points extend farther away, the data show <strong>greater dispersion</strong>. Compare these distances with the X and Y standard deviations above: larger standard deviations should correspond to a wider spread of points along that axis. All X and Y values are constrained between -10 and +10 for a consistent teaching scale.</p>
+                </div>
+                <div style="font-size: 0.9em; color: #666;">
+                    <div class="legend-item">
+                        <div class="legend-color data-points"></div>
+                        <span>Data Points</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color mean-line"></div>
+                        <span>Mean coordinates</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            <div class="tab-content">
+                <h3>Mean and Standard Deviation</h3>
+                <div class="info-box">
+                    <strong>Mean:</strong> The average value, shown as a vertical line. It represents the center of your data distribution.
+                </div>
+                <div class="info-box">
+                    <strong>Standard Deviation (SD):</strong> Measures spread. In a normal distribution, about 68% of data falls within ±1 SD of the mean.
+                </div>
+                <div class="info-box">
+                    <strong>Larger SD = More Spread:</strong> When points are scattered far from the mean, SD is large. When points cluster near the mean, SD is small.
+                </div>
+            </div>
+        </div>
+    </div>
+
+        </section>
+    </div>
+
+    <script>
+        let data = {
+            x: [],
+            y: []
+        };
+
+        let charts = {
+            xChart: null,
+            yChart: null,
+            xyChart: null
+        };
+
+        function boxMullerRandom() {
+            let u1 = Math.random();
+            let u2 = Math.random();
+            return Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+        }
+
+        function generateRandomData(n, correlation = 0.3) {
+            let newX = [];
+            let newY = [];
+
+            // Generate correlated values on a simple teaching scale.
+            // Values are constrained to [-10, 10], but are NOT re-centered,
+            // so sample means vary naturally from sample to sample.
+            for (let i = 0; i < n; i++) {
+                let z1 = boxMullerRandom();
+                let z2 = boxMullerRandom();
+
+                let x = z1 * 4.0;
+                let y = (correlation * z1 + Math.sqrt(1 - correlation * correlation) * z2) * 4.0;
+
+                x = Math.max(-10, Math.min(10, x));
+                y = Math.max(-10, Math.min(10, y));
+
+                newX.push(parseFloat(x.toFixed(2)));
+                newY.push(parseFloat(y.toFixed(2)));
+            }
+
+            return { x: newX, y: newY };
+        }
+
+        function generateNewSample() {
+            data = generateRandomData(10);
+            updateCharts();
+        }
+
+        function addPoints() {
+            if (data.x.length === 0) {
+                generateNewSample();
+                return;
+            }
+            let newData = generateRandomData(2);
+            data.x = data.x.concat(newData.x);
+            data.y = data.y.concat(newData.y);
+            updateCharts();
+        }
+
+        function clearAll() {
+            data = { x: [], y: [] };
+            updateCharts();
+        }
+
+        function calculateStats(arr) {
+            if (arr.length === 0) return { mean: 0, sd: 0 };
+
+            let mean = arr.reduce((a, b) => a + b, 0) / arr.length;
+            let variance = arr.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / arr.length;
+            let sd = Math.sqrt(variance);
+
+            return { mean: parseFloat(mean.toFixed(2)), sd: parseFloat(sd.toFixed(2)) };
+        }
+
+        function calculateCorrelation(x, y) {
+            if (x.length === 0) return 0;
+
+            let meanX = x.reduce((a, b) => a + b, 0) / x.length;
+            let meanY = y.reduce((a, b) => a + b, 0) / y.length;
+
+            let numerator = 0;
+            let denomX = 0;
+            let denomY = 0;
+
+            for (let i = 0; i < x.length; i++) {
+                numerator += (x[i] - meanX) * (y[i] - meanY);
+                denomX += Math.pow(x[i] - meanX, 2);
+                denomY += Math.pow(y[i] - meanY, 2);
+            }
+
+            return denomX * denomY === 0 ? 0 : parseFloat((numerator / Math.sqrt(denomX * denomY)).toFixed(3));
+        }
+
+        function createReferenceLinePlugin(statsX, statsY, isYChart = false) {
+            return {
+                afterDatasetsDraw(chart) {
+                    const ctx = chart.ctx;
+                    const xScale = chart.scales.x;
+                    const yScale = chart.scales.y;
+
+                    const stats = isYChart ? statsY : statsX;
+
+                    // For categorical scale, calculate pixel position manually
+                    // Get the data range from the scale
+                    const minValue = Math.min(...(isYChart ? data.y : data.x));
+                    const maxValue = Math.max(...(isYChart ? data.y : data.x));
+                    const dataRange = maxValue - minValue;
+
+                    // Calculate relative position of mean within the range
+                    const relativePos = (stats.mean - minValue) / dataRange;
+                    const chartWidth = xScale.width;
+                    const chartLeft = xScale.left;
+                    const meanX = chartLeft + (relativePos * chartWidth);
+
+                    ctx.save();
+
+                    // Draw mean line only
+                    ctx.strokeStyle = '#111111';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(meanX, yScale.top);
+                    ctx.lineTo(meanX, yScale.bottom);
+                    ctx.stroke();
+
+                    ctx.restore();
+                }
+            };
+        }
+
+        function updateCharts() {
+            let statsX = calculateStats(data.x);
+            let statsY = calculateStats(data.y);
+            let corr = calculateCorrelation(data.x, data.y);
+
+            // Update stat displays
+            document.getElementById('xMean').textContent = statsX.mean === 0 && data.x.length === 0 ? '—' : statsX.mean.toFixed(2);
+            document.getElementById('xSD').textContent = statsX.sd === 0 && data.x.length === 0 ? '—' : statsX.sd.toFixed(2);
+            document.getElementById('yMean').textContent = statsY.mean === 0 && data.y.length === 0 ? '—' : statsY.mean.toFixed(2);
+            document.getElementById('ySD').textContent = statsY.sd === 0 && data.y.length === 0 ? '—' : statsY.sd.toFixed(2);
+            document.getElementById('xN').textContent = data.x.length === 0 ? '—' : data.x.length;
+            document.getElementById('yN').textContent = data.y.length === 0 ? '—' : data.y.length;
+
+            // Update scatterplot stats - combined mean and SD
+            let combinedMeanText = data.x.length === 0 ? '—' : `(${statsX.mean.toFixed(2)}, ${statsY.mean.toFixed(2)})`;
+            let combinedSDValue = (statsX.sd + statsY.sd) / 2;
+            let combinedSDText = data.x.length === 0 ? '—' : combinedSDValue.toFixed(2);
+
+            document.getElementById('combinedMean').textContent = combinedMeanText;
+            document.getElementById('combinedSD').textContent = combinedSDText;
+
+            document.getElementById('sampleSize').textContent = data.x.length;
+
+            updateXChart(statsX);
+            updateYChart(statsY);
+            updateXYChart(statsX, statsY);
+        }
+
+        function updateXChart(stats) {
+            const ctx = document.getElementById('xChart').getContext('2d');
+
+            if (charts.xChart) charts.xChart.destroy();
+
+            const points = data.x.map((value, i) => ({ x: value, y: i + 1 }));
+
+            const deviationPlugin = {
+                id: 'xDeviationLines',
+                afterDatasetsDraw(chart) {
+                    const ctx = chart.ctx;
+                    const xScale = chart.scales.x;
+                    const yScale = chart.scales.y;
+                    const meanX = xScale.getPixelForValue(stats.mean);
+
+                    ctx.save();
+                    ctx.lineWidth = 2;
+                    ctx.strokeStyle = 'rgba(204, 0, 0, 0.42)';
+
+                    points.forEach(p => {
+                        const px = xScale.getPixelForValue(p.x);
+                        const py = yScale.getPixelForValue(p.y);
+                        ctx.beginPath();
+                        ctx.moveTo(meanX, py);
+                        ctx.lineTo(px, py);
+                        ctx.stroke();
+                    });
+
+                    ctx.strokeStyle = '#111111';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(meanX, yScale.top);
+                    ctx.lineTo(meanX, yScale.bottom);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            };
+
+            charts.xChart = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'X observations',
+                        data: points,
+                        backgroundColor: '#cc0000',
+                        borderColor: '#8f0000',
+                        pointRadius: 6,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => {
+                                    const v = context.raw.x;
+                                    return `Observation ${context.raw.y}: ${v.toFixed(2)} (deviation = ${Math.abs(v - stats.mean).toFixed(2)})`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            min: -10,
+                            max: 10,
+                            title: { display: true, text: 'Value (-10 to +10)' },
+                            ticks: { stepSize: 2 },
+                            grid: { color: 'rgba(0,0,0,0.08)' }
+                        },
+                        y: {
+                            min: 0,
+                            max: data.x.length + 1,
+                            reverse: true,
+                            title: { display: true, text: 'Observation' },
+                            ticks: {
+                                stepSize: 1,
+                                callback: (value) => Number.isInteger(value) && value >= 1 && value <= data.x.length ? value : ''
+                            },
+                            grid: { display: false }
+                        }
+                    }
+                },
+                plugins: [deviationPlugin]
+            });
+        }
+
+        function updateYChart(stats) {
+            const ctx = document.getElementById('yChart').getContext('2d');
+
+            if (charts.yChart) charts.yChart.destroy();
+
+            const points = data.y.map((value, i) => ({ x: value, y: i + 1 }));
+
+            const deviationPlugin = {
+                id: 'yDeviationLines',
+                afterDatasetsDraw(chart) {
+                    const ctx = chart.ctx;
+                    const xScale = chart.scales.x;
+                    const yScale = chart.scales.y;
+                    const meanX = xScale.getPixelForValue(stats.mean);
+
+                    ctx.save();
+                    ctx.lineWidth = 2;
+                    ctx.strokeStyle = 'rgba(85, 85, 85, 0.46)';
+
+                    points.forEach(p => {
+                        const px = xScale.getPixelForValue(p.x);
+                        const py = yScale.getPixelForValue(p.y);
+                        ctx.beginPath();
+                        ctx.moveTo(meanX, py);
+                        ctx.lineTo(px, py);
+                        ctx.stroke();
+                    });
+
+                    ctx.strokeStyle = '#111111';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(meanX, yScale.top);
+                    ctx.lineTo(meanX, yScale.bottom);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            };
+
+            charts.yChart = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Y observations',
+                        data: points,
+                        backgroundColor: '#555555',
+                        borderColor: '#222222',
+                        pointRadius: 6,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => {
+                                    const v = context.raw.x;
+                                    return `Observation ${context.raw.y}: ${v.toFixed(2)} (deviation = ${Math.abs(v - stats.mean).toFixed(2)})`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            min: -10,
+                            max: 10,
+                            title: { display: true, text: 'Value (-10 to +10)' },
+                            ticks: { stepSize: 2 },
+                            grid: { color: 'rgba(0,0,0,0.08)' }
+                        },
+                        y: {
+                            min: 0,
+                            max: data.y.length + 1,
+                            reverse: true,
+                            title: { display: true, text: 'Observation' },
+                            ticks: {
+                                stepSize: 1,
+                                callback: (value) => Number.isInteger(value) && value >= 1 && value <= data.y.length ? value : ''
+                            },
+                            grid: { display: false }
+                        }
+                    }
+                },
+                plugins: [deviationPlugin]
+            });
+        }
+
+        function updateXYChart(statsX, statsY) {
+            let ctx = document.getElementById('xyChart').getContext('2d');
+
+            if (charts.xyChart) {
+                charts.xyChart.destroy();
+            }
+
+            let scatterData = data.x.map((val, i) => ({
+                x: val,
+                y: data.y[i]
+            }));
+
+            let minX = data.x.length > 0 ? Math.min(...data.x) : -30;
+            let maxX = data.x.length > 0 ? Math.max(...data.x) : 30;
+            let minY = data.y.length > 0 ? Math.min(...data.y) : -30;
+            let maxY = data.y.length > 0 ? Math.max(...data.y) : 30;
+
+            charts.xyChart = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [
+                        {
+                            label: 'Data Points',
+                            data: scatterData,
+                            backgroundColor: 'rgba(204, 0, 0, 0.72)',
+                            borderColor: '#cc0000',
+                            borderWidth: 2,
+                            showLine: false,
+                            pointRadius: 5
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true }
+                    },
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            title: { display: true, text: 'X Variable' },
+                            min: -10,
+                            max: 10,
+                            grid: {
+                                drawBorder: true,
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            border: {
+                                display: true,
+                                width: 3,
+                                color: '#111111'
+                            }
+                        },
+                        y: {
+                            type: 'linear',
+                            title: { display: true, text: 'Y Variable' },
+                            min: -10,
+                            max: 10,
+                            grid: {
+                                drawBorder: true,
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            border: {
+                                display: true,
+                                width: 3,
+                                color: '#111111'
+                            }
+                        }
+                    }
+                },
+                plugins: [{
+                    afterDatasetsDraw(chart) {
+                        const ctx = chart.ctx;
+                        const xScale = chart.scales.x;
+                        const yScale = chart.scales.y;
+
+                        const meanXPixel = xScale.getPixelForValue(statsX.mean);
+                        const meanYPixel = yScale.getPixelForValue(statsY.mean);
+
+                        ctx.save();
+
+                        // Draw lines from mean to each data point
+                        ctx.strokeStyle = 'rgba(204, 0, 0, 0.22)';
+                        ctx.lineWidth = 1;
+
+                        data.x.forEach((xVal, i) => {
+                            const pointXPixel = xScale.getPixelForValue(xVal);
+                            const pointYPixel = yScale.getPixelForValue(data.y[i]);
+
+                            ctx.beginPath();
+                            ctx.moveTo(meanXPixel, meanYPixel);
+                            ctx.lineTo(pointXPixel, pointYPixel);
+                            ctx.stroke();
+                        });
+
+                        // Draw red dot at mean
+                        ctx.fillStyle = '#cc0000';
+                        ctx.beginPath();
+                        ctx.arc(meanXPixel, meanYPixel, 7, 0, 2 * Math.PI);
+                        ctx.fill();
+
+                        // Draw border around mean dot
+                        ctx.strokeStyle = '#8f0000';
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.arc(meanXPixel, meanYPixel, 7, 0, 2 * Math.PI);
+                        ctx.stroke();
+
+                        ctx.restore();
+                    }
+                }]
+            });
+        }
+
+        function switchTab(index) {
+            let tabs = document.querySelectorAll('.tab-content');
+            let buttons = document.querySelectorAll('.tab-button');
+
+            tabs.forEach(tab => tab.classList.remove('active'));
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            tabs[index].classList.add('active');
+            buttons[index].classList.add('active');
+        }
+
+        
+        // Initialize on load
+        window.addEventListener('load', () => {
+            generateNewSample();
+        });
+    </script>
+</body>
+</html>
